@@ -70,8 +70,8 @@
             align-items: center;
             /* MUDOU DE center PARA flex-start (ESQUERDA) */
             justify-content: flex-start; 
-            gap: 25px; /* Aumentei o espaço */
-            margin-bottom: 20px;
+            gap:150px; /* Aumentei o espaço */
+            margin-bottom: 10px;
             padding: 0 20px;
             /*ADICIONADO LARGURA PARA PREENCHER O ESPAÇO */
             width: 100%;
@@ -79,9 +79,9 @@
         }
 
         .header-logo {
-            height: 80px; /* Aumentei um pouco (era 70px) */
+            height: 120px; /* Aumentei um pouco (era 70px) */
             width: auto;
-            filter: drop-shadow(0px 0px 8px rgba(223, 184, 103, 0.6));
+            filter: drop-shadow(0px 0px 12px rgba(223, 184, 103, 0.7));
             flex-shrink: 0; /* Garante que o logo não amasse */
         }
 
@@ -91,8 +91,8 @@
             text-transform: uppercase;
             letter-spacing: 4px;
             color: var(--gold-primary);
-            text-align: center;
-            text-shadow: 0px 0px 30px rgba(223, 184, 103, 0.45);
+            text-align: left;
+            text-shadow: 0px 0px 30px rgba(223, 184, 103, 0.50);
             font-size: 2.2rem;
             /* ADICIONADO: Faz o texto ocupar o resto do espaço disponível */
             flex-grow: 1; 
@@ -100,7 +100,7 @@
 
         @media (max-width: 600px) {
             /* No mobile, volta ao centro para não quebrar o layout */
-            .header-logo-container { justify-content: center; gap: 15px; }
+            .header-logo-container { justify-content: flex-start; gap: 15px; }
             .header-logo { height: 60px; }
             h1 { font-size: 1.5rem; letter-spacing: 2px; flex-grow: 0; }
         }
