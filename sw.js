@@ -1,13 +1,12 @@
-const CACHE_NAME = 'tga-bolao-final-v2';
+const CACHE_NAME = 'tga-bolao-final-v2'; // Nome atualizado para forçar atualização
 
-// Cache apenas o index, manifesto, ícones principais e o confete.
-// Sem sons para não dar erro 404.
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './android/android-launchericon-192-192.png',
-  './android/android-launchericon-512-512.png',
+  './logo-goty.png', // O logo dourado
+  './android/android-launchericon-192-192.png', // Ícone App
+  './android/android-launchericon-512-512.png', // Ícone App
   'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js'
 ];
 
