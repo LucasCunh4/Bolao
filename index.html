@@ -64,19 +64,25 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
+        /* --- MUDANÇAS NO CONTAINER DO LOGO --- */
         .header-logo-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            /* MUDOU DE center PARA flex-start (ESQUERDA) */
+            justify-content: flex-start; 
+            gap: 25px; /* Aumentei o espaço */
             margin-bottom: 20px;
             padding: 0 20px;
+            /*ADICIONADO LARGURA PARA PREENCHER O ESPAÇO */
+            width: 100%;
+            max-width: 1100px;
         }
 
         .header-logo {
-            height: 70px;
+            height: 80px; /* Aumentei um pouco (era 70px) */
             width: auto;
             filter: drop-shadow(0px 0px 8px rgba(223, 184, 103, 0.6));
+            flex-shrink: 0; /* Garante que o logo não amasse */
         }
 
         h1 {
@@ -88,13 +94,17 @@
             text-align: center;
             text-shadow: 0px 0px 30px rgba(223, 184, 103, 0.45);
             font-size: 2.2rem;
+            /* ADICIONADO: Faz o texto ocupar o resto do espaço disponível */
+            flex-grow: 1; 
         }
 
         @media (max-width: 600px) {
-            .header-logo { height: 50px; }
-            h1 { font-size: 1.5rem; letter-spacing: 2px; }
-            .header-logo-container { gap: 10px; }
+            /* No mobile, volta ao centro para não quebrar o layout */
+            .header-logo-container { justify-content: center; gap: 15px; }
+            .header-logo { height: 60px; }
+            h1 { font-size: 1.5rem; letter-spacing: 2px; flex-grow: 0; }
         }
+        /* ------------------------------------ */
 
         /* --- NAVEGAÇÃO --- */
         .nav-bar { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; padding: 0 10px; }
