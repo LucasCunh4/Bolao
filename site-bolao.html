@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>THE GAME AWARDS - BOLÃO 2025</title>
     
+    <meta property="og:title" content="TGA Bolão 2025">
+    <meta property="og:description" content="Faça suas apostas para o Game Awards! Quem será o GOTY?">
+    <meta property="og:image" content="android/android-launchericon-512-512.png">
+    <meta property="og:type" content="website">
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#050505">
     <link rel="apple-touch-icon" href="android/android-launchericon-192-192.png">
@@ -526,7 +531,10 @@
         <div id="view-ranking" class="view-section">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <h2 style="font-size:1rem; color:#666; margin:0; text-transform:uppercase;">Placar Oficial</h2>
-                <button class="reveal-all-btn" onclick="revelarTodos()">Revelar Todos</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="reveal-all-btn" onclick="compartilharRanking()">🔗 Copiar Placar</button>
+                    <button class="reveal-all-btn" onclick="revelarTodos()">Revelar Todos</button>
+                </div>
             </div>
             <table class="leaderboard">
                 <thead><tr><th width="5%"></th><th width="10%">#</th><th width="45%">Participante</th><th width="20%" style="text-align:center;">Acertos</th><th width="20%" style="text-align:right;">Pontos</th></tr></thead>
@@ -603,20 +611,10 @@
         let catAberta = null;
         let linhasReveladas = {};
 
-        // --- AUDIO ENGINE ---
-        const audioFiles = {
-            heartbeat: new Audio('sons/heartbeat.mp3'),
-            applause: new Audio('sons/applause.mp3'),
-            explosion: new Audio('sons/explosion.mp3')
-        };
-        audioFiles.heartbeat.loop = true;
-
-        function playSound(name) {
-            try { const snd = audioFiles[name]; if(snd) { snd.currentTime = 0; snd.play().catch(e=>{}); } } catch(e){}
-        }
-        function stopSound(name) {
-            try { const snd = audioFiles[name]; if(snd) { snd.pause(); snd.currentTime = 0; } } catch(e){}
-        }
+        // --- AUDIO ENGINE (DESATIVADO / MODO SILENCIOSO) ---
+        const audioFiles = {}; 
+        function playSound(name) { /* Silêncio */ }
+        function stopSound(name) { /* Silêncio */ }
 
         window.onload = () => { 
             recuperarDadosLocais(); 
@@ -735,6 +733,26 @@
                 salvarDadosLocais();
                 renderizarBingo();
             }
+        }
+
+        // --- COMPARTILHAR RANKING (NOVO) ---
+        function compartilharRanking() {
+            const ranking = calcularRankingCompleto();
+            let texto = "🏆 *BOLÃO TGA 2025 - PLACAR ATUAL* 🏆\n\n";
+            
+            ranking.forEach((p, idx) => {
+                let medalha = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx+1}`;
+                texto += `${medalha} ${p.nome}: ${p.pontos} pts (${p.acertos} acertos)\n`;
+            });
+            
+            texto += "\nQuem vai levar o GOTY? 🎮✨";
+
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("Placar copiado para a área de transferência!");
+            }).catch(err => {
+                console.error('Erro ao copiar', err);
+                alert("Erro ao copiar placar.");
+            });
         }
 
         // --- CARREGAMENTO DE JOGADORES ---
@@ -958,7 +976,7 @@
                 // Suspense
                 playSound('heartbeat');
                 stage.innerHTML = `<div class="reveal-text">Em ${realPos}º Lugar...</div>`;
-                await wait(2500);
+                await wait(1500); // Tempo reduzido por estar sem som
                 stopSound('heartbeat');
 
                 // Revelação
@@ -984,9 +1002,9 @@
                 if (realPos === 1) {
                     playSound('explosion');
                     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 3000 });
-                    await wait(6000);
-                } else {
                     await wait(4000);
+                } else {
+                    await wait(3000);
                 }
             }
 
