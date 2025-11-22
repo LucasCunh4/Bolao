@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tga-bolao-final-v1';
+const CACHE_NAME = 'tga-bolao-final-v2';
 
 // Cache apenas o index, manifesto, ícones principais e o confete.
 // Sem sons para não dar erro 404.
