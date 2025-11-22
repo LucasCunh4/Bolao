@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE GAME AWARDS - BOLÃO 2025</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#050505">
+    <link rel="apple-touch-icon" href="android/android-launchericon-192-192.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* --- TEMA TGA LUXURY --- */
+        :root {
+            --bg-color: #050505;
+            --card-bg: #141414;
+            --card-hover: #1f1f1f;
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            --gold-primary: #dfb867; 
+            --gold-dim: #9c7c36;
+            --success: #4caf50;
+            --error: #d32f2f;
+            --font-stack: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overscroll-behavior-y: none;
+        }
+
+        button, input, textarea { font-family: var(--font-stack); }
+
+        /* --- CABEÇALHO --- */
+        header {
+            width: 100%;
+            background: linear-gradient(to bottom, #111, #050505);
+            padding: 25px 0 0 0;
+            border-bottom: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .header-logo {
+            height: 70px;
+            width: auto;
+            filter: drop-shadow(0px 0px 8px rgba(223, 184, 103, 0.6));
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold-primary);
+            text-align: center;
+            text-shadow: 0px 0px 30px rgba(223, 184, 103, 0.45);
+            font-size: 2.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .header-logo { height: 50px; }
+            h1 { font-size: 1.5rem; letter-spacing: 2px; }
+            .header-logo-container { gap: 10px; }
+        }
+
+        /* --- NAVEGAÇÃO --- */
+        .nav-bar { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; padding: 0 10px; }
+        .nav-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; padding: 10px 8px; cursor: pointer;
+            position: relative; transition: color 0.3s;
+        }
+        .nav-btn:hover { color: #fff; }
+        .nav-btn.active { color: var(--gold-primary); }
+        .nav-btn.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0;
+            width: 100%; height: 3px; background: var(--gold-primary);
+            box-shadow: 0 -2px 15px var(--gold-primary);
+        }
+
+        /* --- BARRA DE PROGRESSO --- */
+        .progress-container {
+            width: 100%; height: 4px; background: #222; position: relative; margin-top: 5px;
+        }
+        .progress-bar {
+            height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold-primary));
+            width: 0%; transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--gold-dim);
+        }
+        .progress-text {
+            position: absolute; top: 10px; right: 20px; font-size: 0.7rem;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- CONTAINER --- */
+        .container { max-width: 1100px; width: 100%; padding: 30px 20px; flex-grow: 1; }
+
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CONFIGURAÇÃO --- */
+        .config-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+        .config-toggle-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            color: var(--text-muted); padding: 8px 15px; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .config-toggle-btn:hover { background: #1a1a1a; color: var(--gold-primary); border-color: var(--gold-dim); }
+        
+        .config-area {
+            background: #111; padding: 20px; border: 1px solid #333;
+            margin-bottom: 30px; border-radius: 4px; border-left: 3px solid var(--gold-dim);
+        }
+        
+        textarea {
+            width: 100%; height: 100px; background: #080808; border: 1px solid #333;
+            color: #ccc; font-family: monospace; padding: 10px; margin-bottom: 10px;
+        }
+        textarea:focus { outline: 1px solid var(--gold-dim); }
+        
+        .action-btn {
+            background: var(--gold-dim); color: #000; border: none; padding: 10px 20px;
+            font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; margin-right: 10px; width: 100%; margin-bottom: 5px;
+        }
+        .action-btn:hover { background: var(--gold-primary); }
+        .reset-btn { background: #330000; color: #ff4444; border: 1px solid #550000; margin-top: 20px;}
+        .reset-btn:hover { background: #550000; color: #fff; }
+
+        /* --- GERENCIADOR DE FOTOS --- */
+        .photo-manager-container {
+            margin-top: 20px; background: #161616; padding: 15px; border-radius: 4px; border: 1px solid #333;
+        }
+        .photo-list {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 10px;
+        }
+        .photo-item {
+            display: flex; align-items: center; background: #0a0a0a; padding: 10px; border: 1px solid #333; border-radius: 4px; gap: 10px;
+        }
+        .photo-preview-small {
+            width: 40px; height: 40px; border-radius: 50%; background: #222; border: 1px solid #444; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .photo-preview-small img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-name { font-size: 0.9rem; font-weight: 600; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        .upload-label {
+            background: #222; color: #ccc; padding: 5px 10px; font-size: 0.75rem; border-radius: 3px; cursor: pointer; border: 1px solid #444; transition: all 0.2s; text-transform: uppercase; font-weight: bold;
+        }
+        .upload-label:hover { background: var(--gold-dim); color: #000; }
+        .hidden-input { display: none; }
+
+        /* --- GRID CATEGORIAS --- */
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .cat-card {
+            background: var(--card-bg); border: 1px solid #222; padding: 20px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; height: 150px; position: relative; overflow: hidden;
+        }
+        .cat-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); background: #1a1a1a; }
+        .cat-card.resolved { border-left: 4px solid var(--success); opacity: 0.6; background: #0e0e0e; }
+        .cat-card.resolved:hover { opacity: 1; }
+        .cat-title { font-weight: 700; text-transform: uppercase; font-size: 1rem; line-height: 1.4; color: #fff; }
+        .cat-info { display: flex; justify-content: space-between; margin-top: auto; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px; }
+        .winner-preview { color: var(--gold-primary); font-weight: bold; margin-top: 10px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+
+        /* --- BINGO --- */
+        .bingo-container { width: 100%; }
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .bingo-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .bingo-card.checked {
+            border-color: var(--success);
+            background: rgba(76, 175, 80, 0.1);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+        }
+        .bingo-check-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            border: 1px solid #555;
+            background: #000;
+            color: transparent;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+        .bingo-card.checked .bingo-check-btn {
+            background: var(--success);
+            border-color: var(--success);
+            color: #fff;
+        }
+        .bingo-input-area {
+            background: transparent;
+            border: none;
+            color: #ddd;
+            width: 100%;
+            height: 100%;
+            resize: none;
+            font-family: var(--font-stack);
+            font-size: 0.9rem;
+            text-align: center;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bingo-input-area:focus { outline: none; border-bottom: 1px solid var(--gold-dim); }
+        .bingo-input-area::placeholder { color: #444; font-style: italic; }
+        .bingo-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 15px;
+        }
+
+        /* --- RANKING & AVATARS --- */
+        .leaderboard { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .leaderboard th { text-align: left; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; padding: 0 20px 10px 20px; letter-spacing: 2px; }
+        .leaderboard td { background: var(--card-bg); padding: 20px; border: 1px solid transparent; vertical-align: middle; }
+        .leaderboard tr td:first-child { border-radius: 6px 0 0 6px; border-left: 1px solid #222; }
+        .leaderboard tr td:last-child { border-radius: 0 6px 6px 0; border-right: 1px solid #222; }
+        .rank-1 td { background: linear-gradient(90deg, rgba(223, 184, 103, 0.1), transparent); border-top: 1px solid rgba(223, 184, 103, 0.3); border-bottom: 1px solid rgba(223, 184, 103, 0.3); color: #fff; }
+        .rank-1 td:first-child { border-left: 4px solid var(--gold-primary); }
+        .score-big { font-size: 1.5rem; font-weight: 800; color: var(--gold-primary); }
+        .fire-icon { font-size: 1.2rem; margin-left: 8px; animation: pulseFire 1s infinite alternate; display: inline-block; filter: drop-shadow(0 0 5px orange); }
+        .player-flex { display: flex; align-items: center; gap: 15px; }
+        .avatar-circle {
+            width: 40px; height: 40px; border-radius: 50%; background: #333; border: 2px solid #555;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .rank-1 .avatar-circle { border-color: var(--gold-primary); }
+
+        /* --- SISTEMA DE MISTÉRIO --- */
+        .secret-blur {
+            position: relative; user-select: none; background: #000; color: transparent !important; 
+            border-radius: 6px; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-block; min-width: 120px; overflow: hidden;
+        }
+        .secret-blur:not(.revealed) > * { opacity: 0; visibility: hidden; transform: translateY(15px); transition: all 0.5s; }
+        .secret-blur::after {
+            content: '???'; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center; color: #333;
+            font-weight: 800; letter-spacing: 2px; font-size: 1rem; opacity: 1; pointer-events: none; transition: opacity 0.5s;
+        }
+        .secret-blur.revealed { background: transparent; color: inherit !important; overflow: visible; }
+        .secret-blur.revealed > * { opacity: 1; visibility: visible; transform: translateY(0); }
+        .secret-blur.revealed::after { opacity: 0; }
+        .reveal-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid #333; color: #666; width: 35px; height: 35px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 1.2rem;
+        }
+        .reveal-btn:hover { background: #222; color: var(--gold-primary); border-color: var(--gold-dim); transform: scale(1.1); }
+        .reveal-all-btn { background: none; border: none; color: var(--gold-dim); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; text-decoration: underline; }
+        .reveal-all-btn:hover { color: var(--gold-primary); }
+
+        /* --- CERIMÔNIA --- */
+        .ceremony-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; }
+        .big-play-btn {
+            width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--gold-primary);
+            background: rgba(0,0,0,0.5); color: var(--gold-primary); font-size: 3rem; cursor: pointer;
+            transition: all 0.3s; animation: pulseBtn 2s infinite; display: flex; align-items: center; justify-content: center; padding-left: 10px;
+        }
+        .big-play-btn:hover { background: var(--gold-primary); color: #000; transform: scale(1.1); box-shadow: 0 0 30px var(--gold-primary); }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(223, 184, 103, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(223, 184, 103, 0); } 100% { box-shadow: 0 0 0 0 rgba(223, 184, 103, 0); } }
+        .ceremony-stage { width: 100%; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .reveal-text { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 5px; color: var(--text-muted); margin-bottom: 30px; animation: fadeInText 1s ease-out; }
+        @keyframes fadeInText { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .player-reveal-card {
+            background: #111; border: 2px solid var(--gold-primary); padding: 40px; border-radius: 10px;
+            text-align: center; box-shadow: 0 0 50px rgba(223, 184, 103, 0.2); animation: cardSlam 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 600px; width: 100%; position: relative; display: flex; flex-direction: column; align-items: center;
+        }
+        @keyframes cardSlam { from { transform: scale(3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .reveal-avatar-large {
+            width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold-primary);
+            margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            background: #222; color: #fff; font-size: 2rem; font-weight: bold;
+        }
+        .reveal-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+        .player-reveal-name { font-size: 2.5rem; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 10px; }
+        .player-reveal-score { font-size: 1.5rem; color: var(--gold-primary); margin-bottom: 20px; font-weight: bold; }
+        .badges-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+        .reveal-badge { background: rgba(255,255,255,0.1); border: 1px solid #444; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; color: #ccc; display: flex; align-items: center; }
+        .reveal-badge.gold { border-color: var(--gold-dim); color: var(--gold-primary); background: rgba(223, 184, 103, 0.1); }
+
+        /* PODIO */
+        .podium-view { 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
+            min-height: 400px; padding-bottom: 50px; animation: fadeIn 2s; width: 100%;
+        }
+        .podium-main-stage {
+            display: flex; align-items: flex-end; justify-content: center; gap: 20px; height: 350px; width: 100%;
+        }
+        .podium-pillar {
+            width: 120px; background: linear-gradient(to bottom, #222, #000); border: 1px solid #444;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            position: relative; transition: height 1s; border-radius: 8px 8px 0 0;
+        }
+        .pillar-2 { height: 200px; order: 1; border-top: 4px solid silver; }
+        .pillar-1 { height: 280px; order: 2; border-top: 4px solid var(--gold-primary); box-shadow: 0 0 30px rgba(223, 184, 103, 0.2); z-index: 10; }
+        .pillar-3 { height: 140px; order: 3; border-top: 4px solid #cd7f32; }
+        .podium-avatar {
+            width: 70px; height: 70px; background: #333; border-radius: 50%; border: 3px solid #fff;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem;
+            position: absolute; top: -40px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); overflow: hidden; color: #fff;
+        }
+        .podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .pillar-1 .podium-avatar { border-color: var(--gold-primary); background: #111; color: var(--gold-primary); transform: scale(1.2); }
+        .podium-name { position: absolute; bottom: 10px; color: #fff; font-weight: bold; width: 100%; text-align: center; font-size: 0.9rem; padding: 0 5px; }
+        .podium-score { position: absolute; top: 10px; color: rgba(255,255,255,0.5); font-weight: bold; }
+        .podium-rank { font-size: 3rem; opacity: 0.1; font-weight: 800; margin-bottom: 40px; }
+
+        /* PODIO EXTRAS (4º, 5º, 6º lugar) */
+        .podium-extras {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+        }
+        .extra-rank-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 180px;
+            animation: fadeIn 1s ease-out;
+        }
+        .extra-rank-num {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #444;
+        }
+        .extra-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: #222; overflow: hidden;
+            border: 1px solid #555; display: flex; align-items: center; justify-content: center; color: #fff;
+        }
+        .extra-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .extra-info { display: flex; flex-direction: column; }
+        .extra-name { font-weight: bold; color: #ccc; font-size: 0.9rem; }
+        .extra-score { font-size: 0.8rem; color: var(--text-muted); }
+
+
+        /* --- RESUMO --- */
+        .awards-list { display: grid; gap: 15px; }
+        .award-row { background: var(--card-bg); border: 1px solid #222; border-radius: 6px; padding: 20px; cursor: pointer; transition: all 0.2s; display: flex; flex-wrap: wrap; align-items: center; }
+        .award-row:hover { background: #1a1a1a; border-color: var(--gold-dim); transform: translateX(5px); }
+        .award-header { display: flex; align-items: center; width: 100%; }
+        .award-count { font-size: 1.8rem; font-weight: 800; color: var(--gold-primary); min-width: 60px; text-align: center; margin-right: 20px; text-shadow: 0 0 15px rgba(223, 184, 103, 0.2); }
+        .award-game-info { flex-grow: 1; }
+        .award-game { font-size: 1.2rem; font-weight: 600; text-transform: uppercase; }
+        .award-expand-icon { font-size: 0.8rem; color: #666; margin-left: 10px; transition: transform 0.3s; }
+        .award-details { width: 100%; display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #333; animation: slideDown 0.3s ease-out; }
+        .award-details.show { display: block; }
+        .award-tag { display: inline-block; background: rgba(223, 184, 103, 0.15); border: 1px solid rgba(223, 184, 103, 0.3); color: var(--gold-primary); padding: 5px 12px; border-radius: 4px; margin: 0 8px 8px 0; font-size: 0.85rem; font-weight: 500; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(10px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content { background: #0a0a0a; width: 95%; max-width: 550px; border: 1px solid #333; box-shadow: 0 0 60px rgba(0,0,0,0.8); padding: 40px; max-height: 90vh; position: relative; display: flex; flex-direction: column; overflow: visible; }
+        .close-modal { position: absolute; top: 15px; right: 15px; width: 40px; height: 40px; background: #111; border: 1px solid #333; border-radius: 50%; color: #888; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 10; padding: 0; line-height: 1; appearance: none; }
+        .close-modal:hover { color: var(--gold-primary); border-color: var(--gold-dim); background: rgba(223, 184, 103, 0.1); transform: rotate(90deg); box-shadow: 0 0 15px rgba(223, 184, 103, 0.15); }
+        .modal-cat-title { color: var(--gold-primary); text-transform: uppercase; letter-spacing: 3px; margin: 0 0 30px 0; font-size: 1.5rem; text-align: center; text-shadow: 0 0 20px rgba(223, 184, 103, 0.2); flex-shrink: 0; }
+        .custom-dropdown { position: relative; width: 100%; margin-bottom: 20px; user-select: none; flex-shrink: 0; z-index: 2000; }
+        .dropdown-trigger { background: #000; border: 1px solid #444; border-bottom: 2px solid var(--gold-dim); padding: 15px 20px; color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+        .dropdown-trigger:hover { border-color: var(--gold-primary); background: #0a0a0a; }
+        .dropdown-arrow { color: var(--gold-primary); font-size: 0.8rem; transform: rotate(0deg); transition: transform 0.2s; }
+        .dropdown-options { position: absolute; top: 105%; left: 0; right: 0; background: #111; border: 1px solid var(--gold-dim); z-index: 3000; max-height: 50vh; overflow-y: auto; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.9); }
+        .dropdown-options.open { display: block; }
+        .dropdown-options.open + .dropdown-trigger .dropdown-arrow { transform: rotate(180deg); }
+        .dropdown-option-item { padding: 15px 20px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; transition: background 0.2s; }
+        .dropdown-option-item:hover { background: var(--gold-dim); color: #000; font-weight: bold; }
+        .dropdown-option-item.selected { color: var(--gold-primary); background: rgba(223, 184, 103, 0.1); }
+        
+        /* VOTOS COM TOGGLE */
+        .vote-list { border-top: 1px solid #222; padding-top: 10px; overflow-y: auto; flex-grow: 1; min-height: 0; transition: opacity 0.3s; }
+        .vote-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 10px; border-bottom: 1px solid #1a1a1a; border-radius: 4px; margin-bottom: 4px; }
+        .vote-name { font-weight: 600; font-size: 1rem; color: #ddd; display: flex; align-items: center; }
+        .vote-value { color: #666; font-size: 0.95rem; }
+        .is-winner { background: rgba(76, 175, 80, 0.15) !important; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .is-winner .vote-name { color: #fff !important; }
+        .is-winner .vote-value { color: var(--success) !important; font-weight: 900; } 
+        .is-winner .vote-name::before { content: '✓ '; color: var(--success); margin-right: 5px; font-weight: bold; }
+        .is-loser { opacity: 0.5; }
+        .is-loser .vote-value { text-decoration: line-through; color: var(--error); }
+        .hidden { display: none !important; }
+
+        /* TOGGLE BUTTON STYLE */
+        .toggle-votes-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #333;
+            color: #888;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+        .toggle-votes-btn:hover {
+            background: #1a1a1a;
+            border-color: #555;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-logo-container">
+            <img src="logo-goty.png" alt="Logo GOTY Bolão" class="header-logo">
+            <h1>THE GAME AWARDS BOLÃO</h1>
+        </div>
+
+        <nav class="nav-bar">
+            <button class="nav-btn active" onclick="trocarAba('categorias')">Votação</button>
+            <button class="nav-btn" onclick="trocarAba('bingo')">Bingo</button>
+            <button class="nav-btn" onclick="trocarAba('cerimonia')">Cerimônia</button>
+            <button class="nav-btn" onclick="trocarAba('ranking')">Ranking</button>
+            <button class="nav-btn" onclick="trocarAba('resumo')">Top Jogos</button>
+        </nav>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0/20</div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="view-categorias" class="view-section active">
+            <div class="config-header">
+                <button class="config-toggle-btn" onclick="toggleConfig()">⚙️ Configurar / Importar</button>
+            </div>
+            <div id="configArea" class="config-area hidden">
+                <h3 style="color:var(--gold-primary); margin-top:0;">Passo 1: Importar Dados</h3>
+                <p style="color:#888; font-size:0.9rem;">Cole o JSON da planilha aqui:</p>
+                <textarea id="jsonInput" placeholder='Ex: [{"nome": "Joao", "palpites": {...}}]'></textarea>
+                <button class="action-btn" onclick="carregarJogadores()">💾 Carregar Jogadores</button>
+
+                <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+
+                <h3 style="color:var(--gold-primary); margin-top:0;">Passo 2: Fotos dos Participantes</h3>
+                <div id="photoManager" class="photo-manager-container">
+                    <p style="color:#666; text-align:center;">Importe os jogadores primeiro para adicionar fotos.</p>
+                </div>
+                
+                <p id="statusMsg" style="margin-bottom:10px; margin-top:10px; font-weight:bold;"></p>
+                <button class="action-btn reset-btn" onclick="resetarDados()">🗑️ APAGAR TUDO E REINICIAR</button>
+            </div>
+            <div id="categoriesGrid" class="categories-grid"></div>
+        </div>
+
+        <div id="view-bingo" class="view-section">
+            <div class="bingo-container">
+                <div class="bingo-header">
+                    <h2 style="font-size:1rem; color:#666; margin:0; text-transform:uppercase;">Cartela de Previsões</h2>
+                    <button class="reveal-all-btn" onclick="resetarBingo()">Limpar Cartela</button>
+                </div>
+                <p style="color:#666; font-size:0.85rem; text-align:center; margin-bottom:10px;">
+                    Preencha os quadrados e clique no círculo para marcar acertos.
+                </p>
+                <div id="bingoGrid" class="bingo-grid"></div>
+            </div>
+        </div>
+
+        <div id="view-cerimonia" class="view-section">
+            <div id="ceremonyStart" class="ceremony-container">
+                <p style="color:#666; margin-bottom:30px; letter-spacing:2px; text-transform:uppercase;">Tudo pronto para revelar os vencedores?</p>
+                <button class="big-play-btn" onclick="iniciarCerimonia()">▶</button>
+            </div>
+            <div id="ceremonyStage" class="ceremony-stage hidden"></div>
+            <div id="podiumView" class="podium-view hidden"></div>
+        </div>
+
+        <div id="view-ranking" class="view-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size:1rem; color:#666; margin:0; text-transform:uppercase;">Placar Oficial</h2>
+                <button class="reveal-all-btn" onclick="revelarTodos()">Revelar Todos</button>
+            </div>
+            <table class="leaderboard">
+                <thead><tr><th width="5%"></th><th width="10%">#</th><th width="45%">Participante</th><th width="20%" style="text-align:center;">Acertos</th><th width="20%" style="text-align:right;">Pontos</th></tr></thead>
+                <tbody id="leaderboardBody"><tr><td colspan="5" style="text-align:center; color:#666; padding:30px;">Sem dados.</td></tr></tbody>
+            </table>
+        </div>
+
+        <div id="view-resumo" class="view-section">
+            <h2 style="font-size:1rem; color:#666; margin-bottom:20px; text-transform:uppercase;">Jogos Premiados</h2>
+            <div id="awardsList" class="awards-list">
+                <p style="text-align:center; color:#444; margin-top:30px;">Nenhum vencedor definido.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay" onclick="fecharModal(event)">
+        <div class="modal-content">
+            <button class="close-modal" onclick="fecharModal(true)">&times;</button>
+            <h2 id="modalTitle" class="modal-cat-title">CATEGORIA</h2>
+            <div class="custom-dropdown" id="customDropdown">
+                <div class="dropdown-trigger" onclick="toggleDropdown()">
+                    <span id="dropdownSelectedText">-- SELECIONE O VENCEDOR --</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-options" id="dropdownOptionsList"></div>
+            </div>
+            
+            <button id="toggleVotesBtn" class="toggle-votes-btn" onclick="toggleVotesVisibility()">👁️ Ver Palpites da Galera</button>
+            
+            <div id="modalVotesList" class="vote-list hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DADOS CONFIGURÁVEIS ---
+        const categoriasConfig = [
+            { id: "goty", nome: "Game of the Year", pontos: 10, concorrentes: ["Clair Obscur: Expedition 33", "Death Stranding 2: On the Beach", "Donkey Kong Bananza", "Hades II", "Hollow Knight: Silksong", "Kingdom Come: Deliverance II"] },
+            { id: "direcao", nome: "Melhor Direção", pontos: 10, concorrentes: ["Clair Obscur: Expedition 33", "Death Stranding 2", "Ghost of Yōtei", "Hades II", "Split Fiction"] },
+            { id: "narrativa", nome: "Melhor Narrativa", pontos: 8, concorrentes: ["Clair Obscur: Expedition 33", "Death Stranding 2", "Ghost of Yōtei", "Kingdom Come: Deliverance II", "Silent Hill f"] },
+            { id: "art", nome: "Melhor Direção de Arte", pontos: 8, concorrentes: ["Clair Obscur: Expedition 33", "Death Stranding 2", "Ghost of Yōtei", "Hades II", "Hollow Knight: Silksong"] },
+            { id: "music", nome: "Melhor Música/Trilha", pontos: 5, concorrentes: ["Hollow Knight: Silksong", "Hades II", "Clair Obscur: Expedition 33", "Ghost of Yōtei", "Death Stranding 2"] },
+            { id: "audio", nome: "Melhor Design de Áudio", pontos: 5, concorrentes: ["Battlefield 6", "Clair Obscur: Expedition 33", "Death Stranding 2", "Ghost of Yōtei", "Silent Hill f"] },
+            { id: "performance", nome: "Melhor Performance", pontos: 5, concorrentes: ["Ben Starr (Clair Obscur", "Charlie Cox (Clair Obscur)", "Erika Ishii (Ghost of Yōtei)", "Jennifer English (Clair Obscur)", "Konatsu Kato (Silent Hill f)","Troy Baker (Indiana Jones)"] },
+            { id: "indie", nome: "Melhor Indie", pontos: 6, concorrentes: ["Absolum", "Ball x Pit", "Blue Prince", "Clair Obscur: Expedition 33", "Hades II", "Hollow Knight: Silksong"] },
+            { id: "debut_indie", nome: "Melhor Indie Estreia", pontos: 4, concorrentes: ["Blue Prince", "Clair Obscur: Expedition 33", "Despelote", "Dispatch", "Megabonk"] },
+            { id: "impact", nome: "Games for Impact", pontos: 4, concorrentes: ["Lost Records: Bloom & Rage", "Consume Me", "Despelote", "South of Midnight", "Wanderstop"] },
+            { id: "action", nome: "Melhor Jogo de Ação", pontos: 5, concorrentes: ["Battlefield 6", "Doom: The Dark Ages", "Hades II", "Ninja Gaiden 4", "Shinobi: Art of Vengeance"] },
+            { id: "action_adv", nome: "Ação e Aventura", pontos: 5, concorrentes: ["Death Stranding 2", "Ghost of Yōtei", "Indiana Jones and the Great Circle", "Hollow Knight: Silksong", "Split Fiction"] },
+            { id: "rpg", nome: "Melhor RPG", pontos: 5, concorrentes: ["Avowed", "Clair Obscur: Expedition 33", "Kingdom Come: Deliverance II", "The Outer Worlds 2", "Monster Hunter Wilds"] },
+            { id: "fighting", nome: "Melhor Jogo de Luta", pontos: 5, concorrentes: ["2XKO", "Fatal Fury: City of the Wolves", "Mortal Kombat: Legacy Kollection", "Capcom Fighting Collection 2", "Virtua Fighter 5 R.E.V.O."] },
+            { id: "sim_strat", nome: "Simulação / Estratégia", pontos: 5, concorrentes: ["The Alters", "FF Tactics: Ivalice Chronicles", "Jurassic World Evolution 3", "Sid Meier's Civilization VII", "Tempest Rising", "Two Point Museum"] },
+            { id: "sports", nome: "Esporte / Corrida", pontos: 5, concorrentes: ["F1 25", "EA Sports FC 26", "Mario Kart World", "Rematch", "Sonic Racing: CrossWorlds"] },
+            { id: "family", nome: "Melhor Jogo Família", pontos: 5, concorrentes: ["Donkey Kong Bananza", "LEGO Party!", "Split Fiction", "Mario Kart World", "Sonic Racing: CrossWorlds"] },
+            { id: "multiplayer", nome: "Melhor Multiplayer", pontos: 3, concorrentes: ["Battlefield 6", "Split Fiction", "ARC Raiders", "Peak", "Elden Ring Nightrein"] },
+            { id: "ongoing", nome: "Melhor em Andamento", pontos: 3, concorrentes: ["Final Fantasy XIV", "Fortnite", "Helldivers 2", "Marvel Rivals", "No Man's Sky"] },
+            { id: "most_anticipated", nome: "Mais Aguardado", pontos: 2, concorrentes: ["Grand Theft Auto VI", "007 First Light", "Marvel's Wolverine", "Resident Evil Requiem", "The Witcher IV"] }
+        ];
+
+        // --- FUNÇÃO DE LIMPEZA DE TEXTO (ESSENCIAL PARA CORRIGIR BUG DE NOMES) ---
+        function normalizarTexto(texto) {
+            if (!texto) return "";
+            return String(texto)
+                .toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]/g, "");
+        }
+
+        // --- ESTADO ---
+        let jogadores = [];
+        let vencedoresOficiais = {};
+        let avatarMap = {}; 
+        let bingoData = []; 
+        let catAberta = null;
+        let linhasReveladas = {};
+
+        // --- AUDIO ENGINE ---
+        const audioFiles = {
+            heartbeat: new Audio('sons/heartbeat.mp3'),
+            applause: new Audio('sons/applause.mp3'),
+            explosion: new Audio('sons/explosion.mp3')
+        };
+        audioFiles.heartbeat.loop = true;
+
+        function playSound(name) {
+            try { const snd = audioFiles[name]; if(snd) { snd.currentTime = 0; snd.play().catch(e=>{}); } } catch(e){}
+        }
+        function stopSound(name) {
+            try { const snd = audioFiles[name]; if(snd) { snd.pause(); snd.currentTime = 0; } } catch(e){}
+        }
+
+        window.onload = () => { 
+            recuperarDadosLocais(); 
+            renderizarGrid(); 
+            renderizarBingo(); 
+            
+            // REGISTRO DO SERVICE WORKER PARA PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW Registrado!', reg))
+                .catch(err => console.log('Erro SW:', err));
+            }
+        };
+
+        // --- SALVAMENTO ---
+        function salvarDadosLocais() {
+            localStorage.setItem('bolao_jogadores', JSON.stringify(jogadores));
+            localStorage.setItem('bolao_vencedores', JSON.stringify(vencedoresOficiais));
+            localStorage.setItem('bolao_avatares', JSON.stringify(avatarMap));
+            localStorage.setItem('bolao_bingo', JSON.stringify(bingoData)); 
+        }
+
+        function recuperarDadosLocais() {
+            const savedJogadores = localStorage.getItem('bolao_jogadores');
+            const savedVencedores = localStorage.getItem('bolao_vencedores');
+            const savedAvatares = localStorage.getItem('bolao_avatares');
+            const savedBingo = localStorage.getItem('bolao_bingo');
+
+            if (savedJogadores) jogadores = JSON.parse(savedJogadores);
+            if (savedVencedores) vencedoresOficiais = JSON.parse(savedVencedores);
+            if (savedAvatares) avatarMap = JSON.parse(savedAvatares);
+            
+            if (savedBingo) {
+                bingoData = JSON.parse(savedBingo);
+            } else {
+                bingoData = Array(25).fill().map(() => ({ text: '', checked: false }));
+            }
+            
+            atualizarGeral();
+            renderizarGerenciadorFotos();
+            renderizarBingo();
+        }
+
+        function resetarDados() {
+            if(confirm("Tem certeza? Isso apagará todos os dados.")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function trocarAba(aba) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const abasMap = { 'categorias': 0, 'bingo': 1, 'cerimonia': 2, 'ranking': 3, 'resumo': 4 };
+            
+            const btn = document.querySelectorAll('.nav-btn')[abasMap[aba]];
+            if (btn) btn.classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(`view-${aba}`).classList.add('active');
+            
+            if(aba === 'ranking') atualizarPlacar();
+            if(aba === 'resumo') atualizarResumo();
+            if(aba === 'bingo') renderizarBingo();
+            
+            if(aba !== 'cerimonia') {
+                stopSound('heartbeat');
+                document.getElementById('ceremonyStart').classList.remove('hidden');
+                document.getElementById('ceremonyStage').classList.add('hidden');
+                document.getElementById('podiumView').classList.add('hidden');
+            }
+        }
+
+        function toggleConfig() { document.getElementById('configArea').classList.toggle('hidden'); }
+
+        // --- BINGO LOGIC ---
+        function renderizarBingo() {
+            const grid = document.getElementById('bingoGrid');
+            grid.innerHTML = '';
+
+            bingoData.forEach((cell, index) => {
+                const card = document.createElement('div');
+                card.className = `bingo-card ${cell.checked ? 'checked' : ''}`;
+                
+                const checkBtn = document.createElement('button');
+                checkBtn.className = 'bingo-check-btn';
+                checkBtn.innerHTML = '✓';
+                checkBtn.onclick = () => toggleBingoCheck(index);
+
+                const input = document.createElement('textarea');
+                input.className = 'bingo-input-area';
+                input.placeholder = "Digite seu palpite...";
+                input.value = cell.text;
+                input.onchange = (e) => updateBingoText(index, e.target.value);
+
+                card.appendChild(checkBtn);
+                card.appendChild(input);
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleBingoCheck(index) {
+            bingoData[index].checked = !bingoData[index].checked;
+            if(bingoData[index].checked) playSound('explosion');
+            salvarDadosLocais();
+            renderizarBingo();
+        }
+
+        function updateBingoText(index, text) {
+            bingoData[index].text = text;
+            salvarDadosLocais();
+        }
+
+        function resetarBingo() {
+            if(confirm("Limpar toda a cartela de Bingo?")) {
+                bingoData = Array(25).fill().map(() => ({ text: '', checked: false }));
+                salvarDadosLocais();
+                renderizarBingo();
+            }
+        }
+
+        // --- CARREGAMENTO DE JOGADORES ---
+        function carregarJogadores() {
+            const input = document.getElementById('jsonInput').value;
+            const status = document.getElementById('statusMsg');
+            try {
+                if (!input.trim()) throw new Error("Vazio");
+                jogadores = JSON.parse(input);
+                salvarDadosLocais(); 
+                status.textContent = `JOGADORES CARREGADOS!`;
+                status.style.color = "var(--success)";
+                linhasReveladas = {}; 
+                renderizarGrid();
+                renderizarGerenciadorFotos();
+            } catch (e) {
+                status.textContent = "ERRO NO JSON DE JOGADORES"; status.style.color = "var(--error)";
+            }
+        }
+
+        // --- GERENCIADOR DE FOTOS (UPLOAD) ---
+        function renderizarGerenciadorFotos() {
+            const container = document.getElementById('photoManager');
+            container.innerHTML = '';
+
+            if(jogadores.length === 0) {
+                container.innerHTML = '<p style="color:#666; text-align:center;">Importe os jogadores primeiro para adicionar fotos.</p>';
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'photo-list';
+
+            jogadores.forEach((player, idx) => {
+                const item = document.createElement('div');
+                item.className = 'photo-item';
+                const currentPhoto = avatarMap[player.nome] || null;
+                let imgHTML = currentPhoto ? `<img src="${currentPhoto}">` : `<span style="color:#666; font-size:0.8rem">${player.nome.charAt(0)}</span>`;
+
+                item.innerHTML = `
+                    <div class="photo-preview-small" id="preview-${idx}">${imgHTML}</div>
+                    <div class="photo-name">${player.nome}</div>
+                    <label class="upload-label">📷 Add
+                        <input type="file" class="hidden-input" accept="image/*" onchange="handlePhotoUpload(event, '${player.nome}', ${idx})">
+                    </label>
+                `;
+                grid.appendChild(item);
+            });
+            container.appendChild(grid);
+        }
+
+        function handlePhotoUpload(event, playerName, idx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_SIZE = 200; 
+                    let width = img.width; let height = img.height;
+                    if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
+                    else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+                    canvas.width = width; canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    avatarMap[playerName] = dataUrl;
+                    salvarDadosLocais();
+                    document.getElementById(`preview-${idx}`).innerHTML = `<img src="${dataUrl}">`;
+                    atualizarGeral();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- CORE LOGIC ---
+        function atualizarGeral() {
+            renderizarGrid();
+            atualizarProgresso();
+            if (catAberta) preencherModal(catAberta);
+        }
+
+        function atualizarProgresso() {
+            const total = categoriasConfig.length;
+            const decididos = Object.keys(vencedoresOficiais).length;
+            const porcentagem = (decididos / total) * 100;
+            document.getElementById('progressBar').style.width = porcentagem + '%';
+            document.getElementById('progressText').textContent = `${decididos}/${total} REVELADOS`;
+        }
+
+        function renderizarGrid() {
+            const container = document.getElementById('categoriesGrid');
+            container.innerHTML = '';
+            let listaParaRenderizar = [...categoriasConfig];
+            listaParaRenderizar.sort((a, b) => {
+                const aResolvido = !!vencedoresOficiais[a.id];
+                const bResolvido = !!vencedoresOficiais[b.id];
+                if (aResolvido === bResolvido) return 0;
+                return aResolvido ? 1 : -1;
+            });
+
+            listaParaRenderizar.forEach(cat => {
+                const vencedor = vencedoresOficiais[cat.id];
+                const resolvidoClass = vencedor ? 'resolved' : '';
+                let preview = vencedor ? `<div class="winner-preview"><span style="font-size:1.2em">🏆</span> ${vencedor}</div>` : `<div style="margin-top:10px; opacity:0.3; font-style:italic;">Aguardando resultado...</div>`;
+                const div = document.createElement('div');
+                div.className = `cat-card ${resolvidoClass}`;
+                div.onclick = () => abrirModal(cat.id);
+                div.innerHTML = `<div class="cat-title">${cat.nome}</div>${preview}<div class="cat-info"><span>${cat.pontos} PTS</span><span style="color:var(--gold-dim)">ABRIR ▶</span></div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleReveal(index) {
+            const spans = document.querySelectorAll(`.secret-row-${index}`);
+            spans.forEach(span => span.classList.toggle('revealed'));
+            if (linhasReveladas[index]) delete linhasReveladas[index]; else linhasReveladas[index] = true;
+        }
+
+        function revelarTodos() {
+            const spans = document.querySelectorAll('.secret-blur');
+            spans.forEach(span => span.classList.add('revealed'));
+            jogadores.forEach((_, idx) => linhasReveladas[idx] = true);
+        }
+
+        function getAvatarHTML(nome) {
+            const url = avatarMap[nome];
+            if (url) return `<div class="avatar-circle"><img src="${url}" alt="${nome}"></div>`;
+            const inicial = nome ? nome.charAt(0).toUpperCase() : "?";
+            return `<div class="avatar-circle">${inicial}</div>`;
+        }
+
+        function atualizarPlacar() {
+            if (jogadores.length === 0) return;
+            const ranking = calcularRankingCompleto();
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            ranking.forEach((r, index) => {
+                const tr = document.createElement('tr');
+                if (index === 0 && r.pontos > 0) tr.classList.add('rank-1');
+                const fireHTML = r.isFire ? '<span class="fire-icon">🔥</span>' : '';
+                const isRevealedClass = linhasReveladas[index] ? 'revealed' : '';
+                const avatarHTML = getAvatarHTML(r.nome);
+                tr.innerHTML = `
+                    <td style="text-align:center;"><button class="reveal-btn" onclick="toggleReveal(${index})">👁️</button></td>
+                    <td style="font-weight:bold; color:#666;">#${index + 1}</td>
+                    <td><div class="secret-blur secret-row-${index} ${isRevealedClass}" style="width:100%"><div class="player-flex">${avatarHTML}<span style="font-weight:600; font-size:1.1rem;">${r.nome} ${fireHTML}</span></div></div></td>
+                    <td style="text-align:center;"><span class="secret-blur secret-row-${index} ${isRevealedClass}" style="color:#888;">${r.acertos}</span></td>
+                    <td style="text-align:right;"><span class="secret-blur secret-row-${index} ${isRevealedClass}" class="score-big" style="color:var(--gold-primary); font-weight:800; font-size:1.5rem;">${r.pontos}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CALCULAR RANKING (COM CORREÇÃO DE TEXTO) ---
+        function calcularRankingCompleto() {
+            const ranking = jogadores.map(p => {
+                let pontos = 0; 
+                let acertos = 0; 
+                let currentStreak = 0; 
+                let isFire = false;
+                let acertosDetalhes = [];
+                
+                categoriasConfig.forEach(cat => {
+                    const vencedorOficial = vencedoresOficiais[cat.id];
+                    
+                    if (vencedorOficial) {
+                        const palpiteLimpo = normalizarTexto(p.palpites ? p.palpites[cat.id] : "");
+                        const oficialLimpo = normalizarTexto(vencedorOficial);
+
+                        if (palpiteLimpo && palpiteLimpo === oficialLimpo) {
+                            pontos += cat.pontos; 
+                            acertos++; 
+                            currentStreak++;
+                            if (currentStreak >= 3) isFire = true;
+                            acertosDetalhes.push(cat.nome);
+                        } else { 
+                            currentStreak = 0; 
+                            isFire = false; 
+                        }
+                    }
+                });
+                return { nome: p.nome, pontos, acertos, isFire, acertosDetalhes };
+            });
+            
+            ranking.sort((a, b) => { 
+                if (b.pontos !== a.pontos) return b.pontos - a.pontos; 
+                return b.acertos - a.acertos; 
+            });
+            
+            return ranking;
+        }
+
+        // --- CERIMÔNIA (ATUALIZADO PARA 6 JOGADORES) ---
+        async function iniciarCerimonia() {
+            if(jogadores.length === 0) { alert("Importe os jogadores primeiro!"); return; }
+            
+            document.getElementById('ceremonyStart').classList.add('hidden');
+            const stage = document.getElementById('ceremonyStage');
+            stage.classList.remove('hidden');
+            stage.innerHTML = ''; 
+
+            const ranking = calcularRankingCompleto();
+            
+            // Define quantos jogadores revelar (máximo 6, ou o total de jogadores se for menor que 6)
+            const totalReveal = Math.min(ranking.length, 6);
+            
+            // Pega os top X jogadores
+            const topPlayers = ranking.slice(0, totalReveal);
+            
+            // Inverte para revelar do último para o primeiro (Ex: 6º -> 5º -> ... -> 1º)
+            const revealOrder = [...topPlayers].reverse();
+
+            for (let i = 0; i < revealOrder.length; i++) {
+                const player = revealOrder[i];
+                // O ranking real é calculado de trás pra frente no loop
+                const realPos = totalReveal - i;
+
+                // Suspense
+                playSound('heartbeat');
+                stage.innerHTML = `<div class="reveal-text">Em ${realPos}º Lugar...</div>`;
+                await wait(2500);
+                stopSound('heartbeat');
+
+                // Revelação
+                playSound('applause');
+                let badgesHTML = '';
+                player.acertosDetalhes.forEach(cat => { badgesHTML += `<div class="reveal-badge gold">★ ${cat}</div>`; });
+                if(badgesHTML === '') badgesHTML = '<div class="reveal-badge">Sem acertos</div>';
+                
+                const url = avatarMap[player.nome];
+                let avatarLargeHTML = url ? `<div class="reveal-avatar-large"><img src="${url}"></div>` : `<div class="reveal-avatar-large">${player.nome.charAt(0)}</div>`;
+
+                stage.innerHTML = `
+                    <div class="reveal-text">Em ${realPos}º Lugar</div>
+                    <div class="player-reveal-card">
+                        ${avatarLargeHTML}
+                        <div class="player-reveal-name">${player.nome}</div>
+                        <div class="player-reveal-score">${player.pontos} PONTOS</div>
+                        <div style="font-size:0.8rem; color:#888; margin-bottom:10px;">CATEGORIAS ACERTADAS:</div>
+                        <div class="badges-container">${badgesHTML}</div>
+                    </div>
+                `;
+
+                if (realPos === 1) {
+                    playSound('explosion');
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 3000 });
+                    await wait(6000);
+                } else {
+                    await wait(4000);
+                }
+            }
+
+            stage.classList.add('hidden');
+            mostrarPodio(ranking);
+        }
+
+        function mostrarPodio(ranking) {
+            const podiumView = document.getElementById('podiumView');
+            podiumView.classList.remove('hidden');
+            playSound('applause'); 
+            playSound('explosion'); 
+            
+            const p1 = ranking[0] || { nome: '-', pontos: 0 };
+            const p2 = ranking[1] || { nome: '-', pontos: 0 };
+            const p3 = ranking[2] || { nome: '-', pontos: 0 };
+
+            // Pega os extras (4º, 5º, 6º) se existirem
+            const extras = ranking.slice(3, 6);
+
+            const getPodiumAvatar = (nome) => {
+                const url = avatarMap[nome];
+                return url ? `<img src="${url}">` : nome.charAt(0);
+            };
+
+            // Monta HTML dos extras
+            let extrasHTML = '';
+            if (extras.length > 0) {
+                extrasHTML = '<div class="podium-extras">';
+                extras.forEach((p, idx) => {
+                    const rank = idx + 4;
+                    const url = avatarMap[p.nome];
+                    const img = url ? `<img src="${url}">` : p.nome.charAt(0);
+                    
+                    extrasHTML += `
+                        <div class="extra-rank-card">
+                            <div class="extra-rank-num">${rank}º</div>
+                            <div class="extra-avatar">${img}</div>
+                            <div class="extra-info">
+                                <div class="extra-name">${p.nome}</div>
+                                <div class="extra-score">${p.pontos} pts</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                extrasHTML += '</div>';
+            }
+
+            podiumView.innerHTML = `
+                <div class="podium-main-stage">
+                    <div class="podium-pillar pillar-2">
+                        <div class="podium-rank">2</div>
+                        <div class="podium-avatar">${getPodiumAvatar(p2.nome)}</div>
+                        <div class="podium-name">${p2.nome}</div>
+                        <div class="podium-score">${p2.pontos}pts</div>
+                    </div>
+                    <div class="podium-pillar pillar-1">
+                        <div class="podium-rank">1</div>
+                        <div class="podium-avatar">${getPodiumAvatar(p1.nome)}</div>
+                        <div class="podium-name" style="font-size:1.2rem; color:var(--gold-primary)">${p1.nome}</div>
+                        <div class="podium-score" style="color:#fff">${p1.pontos}pts</div>
+                    </div>
+                    <div class="podium-pillar pillar-3">
+                        <div class="podium-rank">3</div>
+                        <div class="podium-avatar">${getPodiumAvatar(p3.nome)}</div>
+                        <div class="podium-name">${p3.nome}</div>
+                        <div class="podium-score">${p3.pontos}pts</div>
+                    </div>
+                </div>
+                ${extrasHTML}
+            `;
+            
+            var duration = 3000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#dfb867', '#ffffff'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#dfb867', '#ffffff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        // --- RESUMO ---
+        function atualizarResumo() {
+            const container = document.getElementById('awardsList');
+            container.innerHTML = '';
+            const stats = {};
+            categoriasConfig.forEach(cat => {
+                const winner = vencedoresOficiais[cat.id];
+                if (winner) { if (!stats[winner]) stats[winner] = { count: 0, categories: [] }; stats[winner].count++; stats[winner].categories.push(cat.nome); }
+            });
+            const lista = Object.entries(stats).map(([jogo, dados]) => ({ jogo, ...dados })).sort((a, b) => b.count - a.count);
+            if (lista.length === 0) { container.innerHTML = '<p style="text-align:center; color:#444; margin-top:30px;">Nenhum vencedor definido.</p>'; return; }
+            lista.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'award-row';
+                div.onclick = () => document.getElementById(`details-${index}`).classList.toggle('show');
+                let tagsHTML = ''; item.categories.forEach(catName => tagsHTML += `<span class="award-tag">${catName}</span>`);
+                const label = item.count > 1 ? 'Prêmios' : 'Prêmio';
+                div.innerHTML = `<div class="award-header"><div class="award-count">${item.count}</div><div class="award-game-info"><div class="award-game">${item.jogo}</div><div style="color:#666; font-size:0.9rem;">${label} conquistados</div></div><div class="award-expand-icon">▼</div></div><div id="details-${index}" class="award-details">${tagsHTML}</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        // --- MODAL ---
+        function abrirModal(catId) { catAberta = catId; document.getElementById('modalOverlay').classList.add('active'); preencherModal(catId); }
+        function fecharModal(evt) { if (evt === true || evt.target.id === 'modalOverlay') { document.getElementById('modalOverlay').classList.remove('active'); catAberta = null; document.getElementById('dropdownOptionsList').classList.remove('open'); } }
+        function toggleDropdown() { document.getElementById('dropdownOptionsList').classList.toggle('open'); }
+        
+        // NOVA FUNÇÃO DE TOGGLE
+        function toggleVotesVisibility() {
+            const list = document.getElementById('modalVotesList');
+            const btn = document.getElementById('toggleVotesBtn');
+            const isHidden = list.classList.contains('hidden');
+            
+            if (isHidden) {
+                list.classList.remove('hidden');
+                btn.textContent = "🙈 Ocultar Palpites";
+                btn.style.color = "var(--gold-primary)";
+                btn.style.borderColor = "var(--gold-dim)";
+            } else {
+                list.classList.add('hidden');
+                btn.textContent = "👁️ Ver Palpites da Galera";
+                btn.style.color = "#888";
+                btn.style.borderColor = "#333";
+            }
+        }
+
+        function selecionarOpcao(valor) {
+            if (catAberta) {
+                if (valor === "") delete vencedoresOficiais[catAberta]; else {
+                    vencedoresOficiais[catAberta] = valor; playSound('explosion'); playSound('applause');
+                    var duration = 2500; var end = Date.now() + duration;
+                    (function frame() { confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#dfb867', '#ffffff'], zIndex: 3000 }); confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#dfb867', '#ffffff'], zIndex: 3000 }); if (Date.now() < end) requestAnimationFrame(frame); }());
+                }
+                salvarDadosLocais(); atualizarGeral(); document.getElementById('dropdownOptionsList').classList.remove('open');
+            }
+        }
+
+        function preencherModal(catId) {
+            const cat = categoriasConfig.find(c => c.id === catId);
+            const vencedorAtual = vencedoresOficiais[catId] || "";
+            document.getElementById('modalTitle').textContent = cat.nome;
+            document.getElementById('dropdownSelectedText').textContent = vencedorAtual ? vencedorAtual : "-- SELECIONE O VENCEDOR --";
+            document.getElementById('dropdownSelectedText').style.color = vencedorAtual ? "var(--gold-primary)" : "#fff";
+            const listContainer = document.getElementById('dropdownOptionsList'); listContainer.innerHTML = '';
+            const clearOption = document.createElement('div'); clearOption.className = 'dropdown-option-item'; clearOption.textContent = "-- Limpar Seleção --"; clearOption.style.color = "#888"; clearOption.onclick = () => selecionarOpcao(""); listContainer.appendChild(clearOption);
+            cat.concorrentes.forEach(jogo => {
+                const item = document.createElement('div'); item.className = 'dropdown-option-item'; if (jogo === vencedorAtual) item.classList.add('selected'); item.textContent = jogo; item.onclick = () => selecionarOpcao(jogo); listContainer.appendChild(item);
+            });
+            
+            // RESETAR VISIBILIDADE
+            const votesList = document.getElementById('modalVotesList'); 
+            votesList.innerHTML = '';
+            votesList.classList.add('hidden'); // Garante que comece oculto
+            
+            const toggleBtn = document.getElementById('toggleVotesBtn');
+            if(toggleBtn) {
+                toggleBtn.textContent = "👁️ Ver Palpites da Galera";
+                toggleBtn.style.color = "#888";
+                toggleBtn.style.borderColor = "#333";
+            }
+
+            if (jogadores.length === 0) { votesList.innerHTML = '<p style="color:#666; text-align:center; margin-top:20px;">Nenhum dado importado.</p>'; return; }
+            
+            let playersComStatus = jogadores.map(p => {
+                let streak = 0; let isFire = false;
+                categoriasConfig.forEach(c => { 
+                    if (vencedoresOficiais[c.id]) { 
+                        const pLimpo = normalizarTexto(p.palpites ? p.palpites[c.id] : "");
+                        const vLimpo = normalizarTexto(vencedoresOficiais[c.id]);
+                        
+                        if (pLimpo === vLimpo) { 
+                            streak++; if (streak >= 3) isFire = true; 
+                        } else { streak = 0; isFire = false; } 
+                    } 
+                });
+                return { ...p, isFire };
+            });
+
+            if (vencedorAtual) {
+                const vLimpoAtual = normalizarTexto(vencedorAtual);
+                playersComStatus.sort((a, b) => {
+                    const hitA = normalizarTexto(a.palpites?.[catId]) === vLimpoAtual ? 1 : 0;
+                    const hitB = normalizarTexto(b.palpites?.[catId]) === vLimpoAtual ? 1 : 0;
+                    return hitB - hitA;
+                });
+            }
+
+            playersComStatus.forEach(p => {
+                const voto = p.palpites?.[catId] || "—"; 
+                let rowClass = "vote-row"; 
+                
+                if (vencedorAtual) { 
+                    if (normalizarTexto(voto) === normalizarTexto(vencedorAtual)) {
+                        rowClass += " is-winner"; 
+                    } else { 
+                        rowClass += " is-loser"; 
+                    } 
+                }
+                const fireHTML = p.isFire ? '<span class="fire-icon">🔥</span>' : '';
+                const div = document.createElement('div'); div.className = rowClass; div.innerHTML = `<span class="vote-name">${p.nome} ${fireHTML}</span><span class="vote-value">${voto}</span>`; votesList.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
