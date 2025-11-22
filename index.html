@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>THE GAME AWARDS - BOLÃO 2025</title>
     
+    <meta property="og:title" content="TGA Bolão 2025">
+    <meta property="og:description" content="Faça suas apostas para o Game Awards! Quem será o GOTY?">
+    <meta property="og:image" content="android/android-launchericon-512-512.png">
+    <meta property="og:type" content="website">
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#050505">
+    <link rel="apple-touch-icon" href="android/android-launchericon-192-192.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -58,19 +64,36 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .header-logo {
+            height: 70px;
+            width: auto;
+            filter: drop-shadow(0px 0px 8px rgba(223, 184, 103, 0.6));
+        }
+
         h1 {
+            margin: 0;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 4px;
             color: var(--gold-primary);
             text-align: center;
-            margin: 0 0 20px 0;
             text-shadow: 0px 0px 30px rgba(223, 184, 103, 0.45);
             font-size: 2.2rem;
         }
 
         @media (max-width: 600px) {
+            .header-logo { height: 50px; }
             h1 { font-size: 1.5rem; letter-spacing: 2px; }
+            .header-logo-container { gap: 10px; }
         }
 
         /* --- NAVEGAÇÃO --- */
@@ -439,7 +462,11 @@
 <body>
 
     <header>
-        <h1>THE GAME AWARDS BOLÃO</h1>
+        <div class="header-logo-container">
+            <img src="logo-goty.png" alt="Logo GOTY Bolão" class="header-logo">
+            <h1>THE GAME AWARDS BOLÃO</h1>
+        </div>
+
         <nav class="nav-bar">
             <button class="nav-btn active" onclick="trocarAba('categorias')">Votação</button>
             <button class="nav-btn" onclick="trocarAba('bingo')">Bingo</button>
